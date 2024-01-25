@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATA_SOURCE_URL=jdbc:postgresql://db:5433/compose-postgres
+      - SPRING_DATA_SOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
       - SPRING_DATASOURCE_USERNAME=compose-postgres
       - SPRING_DATASOURCE_PASSWORD=compose-postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create
@@ -18,7 +18,7 @@ services:
     image: 'postgres:14.1-alpine'
     container_name: db
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=compose-postgres
