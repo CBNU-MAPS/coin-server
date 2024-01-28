@@ -4,19 +4,21 @@ services:
   app:
     image: 'minseokoh/coin:latest'
     container_name: app
+    ports:
+      - "8080:8080"
     depends_on:
       - db
     environment:
-      - SPRING_DATA_SOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
-      - SPRING_DATASOURCE_USERNAME=compose-postgres
-      - SPRING_DATASOURCE_PASSWORD=compose-postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "postgres"
 
   db:
-    image: 'postgres:14.1-alpine'
+    image: 'postgres:14.10-alpine3.18'
     container_name: db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=compose-postgres
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
