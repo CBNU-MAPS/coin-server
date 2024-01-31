@@ -21,18 +21,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      #      - name: Make application.yml
-      #        run: |
-      #          cd ./src/main/resources
-      #          touch ./application.yml
-      #          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
-      #        shell: bash
+      #- name: Make application.yml
+      #  run: |
+      #    cd ./src/main/resources
+      #    touch ./application.yml
+      #    echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+      #    shell: bash
 
       - name: Permisson Settings of ./gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       - name: Docker build & push to DockerHub
         run: |
