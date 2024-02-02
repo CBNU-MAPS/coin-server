@@ -1,6 +1,6 @@
 package com.maps.coin.controller;
 
-import com.maps.coin.domain.Room;
+import com.maps.coin.domain.room.Room;
 import com.maps.coin.dto.CreateRoomRequest;
 import com.maps.coin.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;

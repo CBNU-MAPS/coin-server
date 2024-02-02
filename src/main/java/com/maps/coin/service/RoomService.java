@@ -1,6 +1,6 @@
 package com.maps.coin.service;
 
-import com.maps.coin.domain.Room;
+import com.maps.coin.domain.room.Room;
 import com.maps.coin.dto.CreateRoomRequest;
 import com.maps.coin.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
