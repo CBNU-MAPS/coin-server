@@ -28,6 +28,6 @@ public class Answer extends BaseEntity {
     @Column(name = "answer", nullable = false)
     private String answer;
 
-    @Column(name = "check", nullable = false)
-    private boolean check;
+    @Column(name = "selected", nullable = false)
+    private Boolean selected;
 }

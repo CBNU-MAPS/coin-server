@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,13 +22,13 @@ public class Problem extends BaseEntity {
     private Long id;
 
     @Column(name = "roomId", nullable = false)
-    private Long roomId;
+    private UUID roomId;
 
     @Column(name = "questionId", nullable = false)
     private Long questionId;
 
     @Builder
-    public Problem(Long roomId, Long questionId) {
+    public Problem(UUID roomId, Long questionId) {
         this.roomId = roomId;
         this.questionId = questionId;
     }
