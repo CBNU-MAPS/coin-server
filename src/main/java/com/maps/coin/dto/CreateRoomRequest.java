@@ -1,6 +1,6 @@
 package com.maps.coin.dto;
 
-import com.maps.coin.domain.Room;
+import com.maps.coin.domain.room.Room;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

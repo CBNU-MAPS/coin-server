@@ -1,7 +1,8 @@
 package com.maps.coin.controller;
 
-import com.maps.coin.domain.Room;
+import com.maps.coin.domain.room.Room;
 import com.maps.coin.dto.CreateRoomRequest;
+import com.maps.coin.dto.CreateRoomResponse;
 import com.maps.coin.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,8 +30,9 @@ public class RoomController {
                     content = {@Content(schema = @Schema(implementation = Room.class))}),
             @ApiResponse(responseCode = "404", description = "방 생성에 실패했습니다."),
     })
-    public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
+    public ResponseEntity<CreateRoomResponse> createRoom(@RequestBody CreateRoomRequest request) {
         Room savedRoom = roomService.save(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedRoom);
+        CreateRoomResponse createdRoom = roomService.createRoom(savedRoom);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
     }
 }
