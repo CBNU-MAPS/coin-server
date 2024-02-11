@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 public class Answer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "userId", nullable = false)
-    private long userId;
+    private Long userId;
 
     @Column(name = "questionId", nullable = false)
-    private long questionId;
+    private Long questionId;
 
     @Column(name = "answer", nullable = false)
     private String answer;
