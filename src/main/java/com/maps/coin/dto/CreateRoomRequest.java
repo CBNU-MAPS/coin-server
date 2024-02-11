@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateRoomRequest {
     private String name;
-    private Long personnel;
-    private Long size;
+    private Integer personnel;
+    private Integer size;
 
     public Room toEntity() {
         return Room.builder()
