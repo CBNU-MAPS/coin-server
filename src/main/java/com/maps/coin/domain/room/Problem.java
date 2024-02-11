@@ -6,8 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,15 +22,16 @@ public class Problem extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "roomId", nullable = false)
-    private UUID roomId;
-
     @Column(name = "questionId", nullable = false)
     private Long questionId;
 
+    @ManyToOne
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    private Room room;
+
     @Builder
-    public Problem(UUID roomId, Long questionId) {
-        this.roomId = roomId;
+    public Problem(Long questionId, Room room) {
         this.questionId = questionId;
+        this.room = room;
     }
 }
