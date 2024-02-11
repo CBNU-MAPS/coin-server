@@ -12,11 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateRoomResponse {
     private UUID roomCode;
-    private List<Question> questions;
 
     @Builder
-    private CreateRoomResponse(UUID roomCode, List<Question> questions) {
+    private CreateRoomResponse(UUID roomCode) {
         this.roomCode = roomCode;
-        this.questions = questions;
     }
 }
