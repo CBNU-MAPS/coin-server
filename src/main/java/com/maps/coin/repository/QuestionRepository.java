@@ -8,5 +8,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query(value = "SELECT * FROM question order by RANDOM() limit :size * :size", nativeQuery = true)
-    List<Question> findRandomQuestion(@Param(value="size") Long size);
+    List<Question> findRandomQuestion(@Param(value="size") Integer size);
 }

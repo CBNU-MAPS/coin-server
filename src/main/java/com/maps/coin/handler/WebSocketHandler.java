@@ -16,24 +16,7 @@ public class WebSocketHandler implements ChannelInterceptor {
     public void postSend(Message message, MessageChannel channel, boolean sent){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String sessionId = accessor.getSessionId();
-
-        switch ((accessor.getCommand())) {
-            case CONNECT:
-
-                // 유저가 Websocket으로 connect()를 한 뒤 호출됨
-                LOGGER.info("세션 들어옴 => {}", sessionId);
-                break;
-
-            case DISCONNECT:
-
-                // 유저가 Websocket으로 disconnect() 를 한 뒤 호출됨 or 세션이 끊어졌을 때 발생
-                LOGGER.info("세션 끊음 => {}", sessionId);
-                break;
-
-            default:
-
-                break;
-        }
+        LOGGER.info(String.valueOf(accessor.getCommand()));
     }
 
 

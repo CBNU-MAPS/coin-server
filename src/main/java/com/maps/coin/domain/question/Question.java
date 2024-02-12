@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Question extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "type")
     private String type;
