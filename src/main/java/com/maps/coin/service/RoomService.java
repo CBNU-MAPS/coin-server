@@ -25,7 +25,6 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final QuestionRepository questionRepository;
-    private final ProblemRepository problemRepository;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
 
 
