@@ -25,9 +25,16 @@ public class ReadyController {
         String sessionId = headerAccessor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
 
-        List<Boolean> avatars = avatarService.save(roomId, sessionId, message.getAvatar());
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomId,
-                AvatarResponse.builder().selectedAvatars(avatars).build());
+        if (message.getAvatar() > 9) {
+            List<Boolean> avatars = avatarService.read(roomId);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
+                    AvatarResponse.builder().selectedAvatars(avatars).build());
+        }
+        else {
+            List<Boolean> avatars = avatarService.save(roomId, sessionId, message.getAvatar());
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
+                    AvatarResponse.builder().selectedAvatars(avatars).build());
+        }
     }
 
 }
