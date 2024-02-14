@@ -4,8 +4,11 @@ import com.maps.coin.domain.BaseEntity;
 import com.maps.coin.domain.room.Room;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -18,7 +21,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "gamer")
 public class Gamer extends BaseEntity {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -26,7 +30,7 @@ public class Gamer extends BaseEntity {
     @Column(name = "avatar", nullable = false)
     private Integer avatar;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
