@@ -1,6 +1,7 @@
 package com.maps.coin.domain.room;
 
 import com.maps.coin.domain.BaseEntity;
+import com.maps.coin.domain.user.Gamer;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +41,9 @@ public class Room extends BaseEntity {
 
     @OneToMany(mappedBy="room", cascade = CascadeType.ALL)
     private List<Problem> problems = new ArrayList<>();
+
+    @OneToMany(mappedBy="room", cascade = CascadeType.ALL)
+    private List<Gamer> gamers = new ArrayList<>();
 
     @Builder
     public Room(String name, Integer personnel, Integer size) {
