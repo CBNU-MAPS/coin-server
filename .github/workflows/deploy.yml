@@ -28,6 +28,12 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
           shell: bash
 
+      - name: Make .env
+        run: |
+          touch .env
+          echo "${{ secrets.ENV }}" > .env
+          shell: bash
+
       - name: Permisson Settings of ./gradlew
         run: chmod +x ./gradlew
 
@@ -45,7 +51,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true
-        run: aws s3 cp docker-compose.yml s3://maps-s3-bucket/
+        run: |
+          aws s3 cp docker-compose.yml s3://maps-s3-bucket/
+          aws s3 cp .env s3://maps-s3-bucket/
 
       - name: Deploy with AWS SSM Send Command
         uses: peterkimzz/aws-ssm-send-command@v1.1.1
@@ -58,6 +66,7 @@ jobs:
           working-directory: /usr/bin
           command: |
             sudo aws s3 cp s3://maps-s3-bucket/docker-compose.yml ./docker-compose.yml
+            sudo aws s3 cp s3://maps-s3-bucket/.env ./.env
             sudo docker-compose -f docker-compose.yml down
             sudo docker-compose -f docker-compose.yml pull
             sudo docker image rm ${{ secrets.DOCKER_REPO }}
