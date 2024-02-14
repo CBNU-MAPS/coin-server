@@ -33,4 +33,12 @@ public class AvatarService {
         return roomAvatar.put(roomId, avatars);
     }
 
+    public List<Boolean> read(UUID roomId) {
+        if (roomAvatar.get(roomId) == null) {
+            roomAvatar.put(roomId, new ArrayList<Boolean>(Collections.nCopies(10, false)));
+        }
+
+        List<Boolean> avatars = roomAvatar.get(roomId);
+        return avatars;
+    }
 }
