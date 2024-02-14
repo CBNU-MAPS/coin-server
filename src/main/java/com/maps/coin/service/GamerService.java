@@ -7,6 +7,7 @@ import com.maps.coin.dto.GamerInfoResponse;
 import com.maps.coin.dto.GamerResponse;
 import com.maps.coin.repository.GamerRepository;
 import com.maps.coin.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,21 +18,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GamerService {
     private final RoomRepository roomRepository;
-    private final GamerRepository gamerRepository;
-    private final GamerResponse gamerResponse;
     private Map<UUID, List<GamerResponse>> roomGamerResponse = new HashMap<>();
 
     public List<GamerResponse> save(UUID roomId, String name, Integer avatar) {
-        Room room = roomRepository.findById(roomId).orElse(null);
-        room.getGamers().add(Gamer.builder().name(name).avatar(avatar).build());
+        if (!roomGamerResponse.containsKey(roomId)) {
+            roomGamerResponse.put(roomId, new ArrayList<>());
+        }
 
+        Room room = roomRepository.findById(roomId).orElse(null);
+        Gamer gamer = Gamer.builder().name(name).avatar(avatar).build();
+        room.getGamers().add(gamer);
 
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
         gamers.add(GamerResponse.builder().name(name).avatar(avatar).ready(false).turn(false).build());
-        roomGamerResponse.put(roomId,gamers);
+        roomGamerResponse.put(roomId, gamers);
         return gamers;
     }
 }
