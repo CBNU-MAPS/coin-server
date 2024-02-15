@@ -39,7 +39,7 @@ public class StompController {
         String sessionId = headerAccesor.getSessionId();
 
         UUID roomCode = sessionService.readRoomId(sessionId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode,
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
                 roomService.readRoom(roomCode));
     }
 
