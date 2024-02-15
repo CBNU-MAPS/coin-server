@@ -67,5 +67,18 @@ public class GamerService {
 
         return gamers;
     }
+
+    public Boolean readStartStatus(UUID roomId) {
+        List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+
+        Boolean start = true;
+        for (GamerResponse g : gamers) {
+            if (!g.getReady()) {
+                start = false;
+                break;
+            }
+        }
+        return start;
+    }
 }
 

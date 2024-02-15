@@ -60,5 +60,11 @@ public class ReadyController {
         List<GamerResponse> gamers = gamerService.saveReady(roomId, sessionId, message.getAnswers());
         simpleMessageSendingOperations.convertAndSend("/room" + roomId + "/user",
                 GamerInfoResponse.builder().users(gamers).build());
+
+        Boolean start = gamerService.readStartStatus(roomId);
+        if (start) {
+            simpleMessageSendingOperations.convertAndSend("/room" + roomId + "/start",
+                    "");
+        }
     }
 }
