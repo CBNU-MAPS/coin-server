@@ -1,8 +1,8 @@
 package com.maps.coin.controller;
 
 import com.maps.coin.domain.room.Room;
-import com.maps.coin.dto.CreateRoomRequest;
-import com.maps.coin.dto.CreateRoomResponse;
+import com.maps.coin.dto.room.CreateRoomRequest;
+import com.maps.coin.dto.room.CreateRoomResponse;
 import com.maps.coin.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
