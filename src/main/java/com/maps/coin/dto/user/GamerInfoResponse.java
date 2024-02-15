@@ -1,6 +1,5 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.user;
 
-import com.maps.coin.domain.user.Gamer;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;

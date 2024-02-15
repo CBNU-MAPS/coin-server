@@ -1,4 +1,4 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.avatar;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

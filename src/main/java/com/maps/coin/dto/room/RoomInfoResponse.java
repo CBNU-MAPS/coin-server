@@ -1,4 +1,4 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.room;
 
 import com.maps.coin.domain.question.Question;
 import java.util.List;

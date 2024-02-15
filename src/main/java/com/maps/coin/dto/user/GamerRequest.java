@@ -1,4 +1,4 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GamerRequest {
-    private String name;
+    private String userName;
     private Integer avatar;
 }
 
