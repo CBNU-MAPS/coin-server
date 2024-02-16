@@ -27,8 +27,6 @@ public class ReadyController {
     private final AvatarService avatarService;
     private final GamerService gamerService;
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ReadyController.class);
-
     @MessageMapping("/avatar")
     public void sendSelectedAvatar(AvatarRequest message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
@@ -58,12 +56,12 @@ public class ReadyController {
         UUID roomId = sessionService.readRoomId(sessionId);
 
         List<GamerResponse> gamers = gamerService.saveReady(roomId, sessionId, message.getAnswers());
-        simpleMessageSendingOperations.convertAndSend("/room" + roomId + "/user",
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
                 GamerInfoResponse.builder().users(gamers).build());
 
         Boolean start = gamerService.readStartStatus(roomId);
         if (start) {
-            simpleMessageSendingOperations.convertAndSend("/room" + roomId + "/start",
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
                     "");
         }
     }
