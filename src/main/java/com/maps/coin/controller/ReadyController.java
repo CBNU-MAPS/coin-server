@@ -1,17 +1,18 @@
 package com.maps.coin.controller;
 
-import com.maps.coin.domain.user.Gamer;
-import com.maps.coin.dto.AvatarRequest;
-import com.maps.coin.dto.AvatarResponse;
-import com.maps.coin.dto.GamerInfoResponse;
-import com.maps.coin.dto.GamerRequest;
-import com.maps.coin.dto.GamerResponse;
+import com.maps.coin.dto.answer.AnswerListRequest;
+import com.maps.coin.dto.avatar.AvatarRequest;
+import com.maps.coin.dto.avatar.AvatarResponse;
+import com.maps.coin.dto.user.GamerInfoResponse;
+import com.maps.coin.dto.user.GamerRequest;
+import com.maps.coin.dto.user.GamerResponse;
 import com.maps.coin.service.AvatarService;
 import com.maps.coin.service.SessionService;
 import com.maps.coin.service.GamerService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -31,26 +32,37 @@ public class ReadyController {
         String sessionId = headerAccessor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
 
-        if (message.getAvatar() > 9) {
-            List<Boolean> avatars = avatarService.read(roomId);
-            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
-                    AvatarResponse.builder().selectedAvatars(avatars).build());
-        }
-        else {
-            List<Boolean> avatars = avatarService.save(roomId, sessionId, message.getAvatar());
-            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
-                    AvatarResponse.builder().selectedAvatars(avatars).build());
-        }
+        List<Boolean> avatars;
+        if (message.getAvatar() > 9) avatars = avatarService.read(roomId);
+        else avatars = avatarService.save(roomId, sessionId, message.getAvatar());
+
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
+                AvatarResponse.builder().selectedAvatars(avatars).build());
     }
 
     @MessageMapping("/user")
-    public void sendGamersInfo(GamerRequest message, StompHeaderAccessor headerAccessor){
+    public void sendGamersInfo(GamerRequest message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
 
-        List<GamerResponse> gamers = gamerService.save(roomId, message.getName(), message.getAvatar());
+        List<GamerResponse> gamers = gamerService.save(roomId, sessionId, message.getUserName(), message.getAvatar());
         simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
             GamerInfoResponse.builder().users(gamers).build());
+    }
 
+    @MessageMapping("/ready")
+    public void sendGamersReadyInfo(AnswerListRequest message, StompHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
+        UUID roomId = sessionService.readRoomId(sessionId);
+
+        List<GamerResponse> gamers = gamerService.saveReady(roomId, sessionId, message.getAnswers());
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
+                GamerInfoResponse.builder().users(gamers).build());
+
+        Boolean start = gamerService.readStartStatus(roomId);
+        if (start) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
+                    "");
+        }
     }
 }

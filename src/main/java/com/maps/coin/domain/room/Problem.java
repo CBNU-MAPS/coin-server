@@ -1,20 +1,23 @@
 package com.maps.coin.domain.room;
 
 import com.maps.coin.domain.BaseEntity;
-import jakarta.persistence.Column;
+import com.maps.coin.domain.question.Question;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "problem")
 public class Problem extends BaseEntity {
@@ -22,16 +25,17 @@ public class Problem extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "questionId", nullable = false)
-    private Long questionId;
+    @ManyToOne
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
+    private Question question;
 
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
     @Builder
-    public Problem(Long questionId, Room room) {
-        this.questionId = questionId;
+    public Problem(Room room, Question question) {
         this.room = room;
+        this.question = question;
     }
 }

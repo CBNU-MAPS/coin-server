@@ -1,4 +1,4 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,14 @@ public class GamerResponse {
     private Boolean ready;
     private Boolean turn;
     private Integer avatar;
+
+    public void setReady(Boolean ready) {
+        this.ready = ready;
+    }
+
+    public void setTurn(Boolean turn) {
+        this.turn = turn;
+    }
 
     @Builder
     public GamerResponse(Integer avatar, String name, Boolean ready, Boolean turn){

@@ -1,5 +1,6 @@
-package com.maps.coin.dto;
+package com.maps.coin.dto.answer;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GamerRequest {
-    private String name;
-    private Integer avatar;
+public class AnswerListRequest {
+    private List<AnswerRequest> answers;
 }
-
