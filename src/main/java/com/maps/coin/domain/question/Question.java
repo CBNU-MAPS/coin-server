@@ -42,7 +42,8 @@ public class Question extends BaseEntity {
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
-    public Question(String type, String question, String[] option) {
+    public Question(Long id, String type, String question, String[] option) {
+        this.id = id;
         this.type = type;
         this.question = question;
         this.option = option;

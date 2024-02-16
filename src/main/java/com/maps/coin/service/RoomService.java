@@ -52,6 +52,7 @@ public class RoomService {
         problems.forEach(p -> {
             Question question = p.getQuestion();
             questions.add(Question.builder()
+                            .id(question.getId())
                             .type(question.getType())
                             .question(question.getQuestion())
                             .option(question.getOption())
