@@ -103,5 +103,21 @@ public class GamerService {
         roomGamerResponse.put(roomId, gamers);
         return gamers;
     }
+
+    public List<GamerResponse> remove(UUID roomId, String sessionId) {
+        if (roomGamerResponse.containsKey(roomId)) {
+            List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+
+            gamers.removeIf(g -> gamerRepository.findById(sessionId)
+                .map(gamer->gamer.getName().equals(g.getName()))
+                .orElse(false));
+
+            roomGamerResponse.put(roomId, gamers);
+
+            gamerRepository.deleteById(sessionId);
+
+            return gamers;
+        }return null;
+    }
 }
 
