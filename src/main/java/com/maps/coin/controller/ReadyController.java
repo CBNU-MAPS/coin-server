@@ -12,7 +12,6 @@ import com.maps.coin.service.GamerService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -59,10 +58,13 @@ public class ReadyController {
         simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
                 GamerInfoResponse.builder().users(gamers).build());
 
-        Boolean start = gamerService.readStartStatus(roomId);
-        if (start) {
+        if (gamerService.readStartStatus(roomId)) {
             simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
                     "");
+
+            gamers = gamerService.readNextTurnGamer(roomId);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
+                    GamerInfoResponse.builder().users(gamers).build());
         }
     }
 }

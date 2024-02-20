@@ -80,5 +80,28 @@ public class GamerService {
         }
         return start;
     }
+
+    public List<GamerResponse> readNextTurnGamer(UUID roomId) {
+        List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+
+        int isTurn = -1;
+        for (int i = 0; i < gamers.size(); i++) {
+            if (gamers.get(i).getTurn()) {
+                isTurn = i;
+                break;
+            }
+        }
+
+        if (isTurn != -1) {
+            gamers.get(isTurn).setTurn(false);
+            if (isTurn == gamers.size() - 1) isTurn = -1;
+            gamers.get(++isTurn).setTurn(true);
+        }
+        else {
+            gamers.get(0).setTurn(true);
+        }
+        roomGamerResponse.put(roomId, gamers);
+        return gamers;
+    }
 }
 
