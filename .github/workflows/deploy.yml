@@ -53,6 +53,9 @@ jobs:
           aws s3 cp docker-compose.yml s3://maps-s3-bucket/
           aws s3 cp .env s3://maps-s3-bucket/
 
+      - name: Debug SSH Connection
+        run: ssh -v -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}
+  
       - name: Application Run
         uses: appleboy/ssh-action@v0.1.6
         with:
