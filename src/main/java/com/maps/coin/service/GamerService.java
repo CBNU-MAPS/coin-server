@@ -29,7 +29,7 @@ public class GamerService {
     private final AnswerRepository answerRepository;
     private Map<UUID, List<GamerResponse>> roomGamerResponse = new HashMap<>();
 
-    public List<GamerResponse> save(UUID roomId, String sessionId, String name, Integer avatar) {
+    public GamerResponse save(UUID roomId, String sessionId, String name, Integer avatar) {
         if (!roomGamerResponse.containsKey(roomId)) {
             roomGamerResponse.put(roomId, new ArrayList<>());
         }
@@ -40,18 +40,17 @@ public class GamerService {
         roomRepository.save(room);
 
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
-        gamers.add(GamerResponse.builder().name(name).avatar(avatar).ready(false).turn(false).build());
+        GamerResponse gamerResponse = GamerResponse.builder().name(name).avatar(avatar).ready(false).turn(false).build();
+        gamers.add(gamerResponse);
         roomGamerResponse.put(roomId, gamers);
-        return gamers;
+
+        return gamerResponse;
     }
 
-    public List<GamerResponse> saveReady(UUID roomId, String sessionId, List<AnswerRequest> answers) {
+    public GamerResponse saveReady(UUID roomId, String sessionId, List<AnswerRequest> answers) {
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
         String name = gamerRepository.findById(sessionId).get().getName();
-
-        gamers.stream().forEach(g -> {
-            if (g.getName().equals(name)) g.setReady(true);
-        });
+        Integer avatar = gamerRepository.findById(sessionId).get().getAvatar();
 
         answers.stream().forEach(a -> {
             Question question = questionRepository.findById(a.getQuestionId()).orElse(null);
@@ -65,7 +64,12 @@ public class GamerService {
             answerRepository.save(answer);
         });
 
-        return gamers;
+        GamerResponse gamer = GamerResponse.builder().name(name).avatar(avatar).ready(true).turn(false).build();
+        return gamer;
+    }
+
+    public List<GamerResponse> read(UUID roomId) {
+        return roomGamerResponse.get(roomId);
     }
 
     public Boolean readStartStatus(UUID roomId) {
@@ -104,9 +108,10 @@ public class GamerService {
         return gamers;
     }
 
-    public List<GamerResponse> remove(UUID roomId, String sessionId) {
+    public GamerResponse remove(UUID roomId, String sessionId) {
         if (roomGamerResponse.containsKey(roomId)) {
             List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+            Integer avatar = gamerRepository.findById(sessionId).get().getAvatar();
 
             gamers.removeIf(g -> gamerRepository.findById(sessionId)
                 .map(gamer->gamer.getName().equals(g.getName()))
@@ -116,7 +121,8 @@ public class GamerService {
 
             gamerRepository.deleteById(sessionId);
 
-            return gamers;
+            GamerResponse gamer = GamerResponse.builder().avatar(avatar).build();
+            return gamer;
         }return null;
     }
 }

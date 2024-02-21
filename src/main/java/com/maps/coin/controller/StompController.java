@@ -11,6 +11,7 @@ import com.maps.coin.service.SessionService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -24,13 +25,13 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @RequiredArgsConstructor
 public class StompController {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
     private final SimpMessageSendingOperations simpleMessageSendingOperations;
 
     private final RoomService roomService;
     private final SessionService sessionService;
     private final AvatarService avatarService;
     private final GamerService gamerService;
+
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
@@ -49,6 +50,10 @@ public class StompController {
         UUID roomCode = sessionService.readRoomId(sessionId);
         simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
             roomService.readRoom(roomCode));
+
+        List<GamerResponse> gamers = gamerService.read(roomCode);
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/users",
+            GamerInfoResponse.builder().users(gamers).build());
     }
 
     @EventListener
@@ -57,15 +62,16 @@ public class StompController {
         String sessionId = headerAccesor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
 
-        LOGGER.info("sessionId Disconnected : " + sessionId);
         sessionService.remove(sessionId, roomId);
 
         List<Boolean> avatars = avatarService.remove(roomId, sessionId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
-            AvatarResponse.builder().selectedAvatars(avatars).build());
+        if (avatars != null) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
+                AvatarResponse.builder().selectedAvatars(avatars).build());
+        }
 
-        List<GamerResponse> gamers = gamerService.remove(roomId, sessionId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/user",
-            GamerInfoResponse.builder().users(gamers).build());
+        GamerResponse gamer = gamerService.remove(roomId, sessionId);
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
+            gamer);
     }
 }
