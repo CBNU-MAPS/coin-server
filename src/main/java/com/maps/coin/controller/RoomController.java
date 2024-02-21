@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
     private final RoomService roomService;
 
-    @PostMapping("/room")
+    @PostMapping("/api/room")
     @Operation(summary = "Post Room Information", description = "방을 생성하고 정보를 전달한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "방 생성에 성공했습니다.",

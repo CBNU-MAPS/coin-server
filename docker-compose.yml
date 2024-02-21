@@ -44,6 +44,7 @@ services:
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
+    command: "certonly -d ${SERVER_DOMAIN} --manual --preferred-challenges dns --server https://acme-v02.api.letsencrypt.org/directory"
 
 volumes:
   postgres_data:
