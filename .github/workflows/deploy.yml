@@ -44,25 +44,26 @@ jobs:
           docker build -t ${{ secrets.DOCKER_REPO }}:latest .
           docker push ${{ secrets.DOCKER_REPO }}:latest
 
-      - name: Save docker-compose.yml to S3
+      - name: Save docker-compose.yml & .env to S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true
         run: |
+          aws s3 cp ./nginx.conf s3://maps-s3-bucket/
           aws s3 cp docker-compose.yml s3://maps-s3-bucket/
           aws s3 cp .env s3://maps-s3-bucket/
 
-      - name: Deploy with AWS SSM Send Command
-        uses: peterkimzz/aws-ssm-send-command@v1.1.1
-        id: ssm
+      - name: Application Run
+        uses: appleboy/ssh-action@master
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: ${{ secrets.AWS_INSTANCE_ID }}
-          working-directory: /usr/bin
-          command: |
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_KEY }}
+          script: |
+            sudo aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            sudo aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            sudo aws s3 cp s3://maps-s3-bucket/nginx.conf ./conf/nginx.conf
             sudo aws s3 cp s3://maps-s3-bucket/docker-compose.yml ./docker-compose.yml
             sudo aws s3 cp s3://maps-s3-bucket/.env ./.env
             sudo docker-compose -f docker-compose.yml down
