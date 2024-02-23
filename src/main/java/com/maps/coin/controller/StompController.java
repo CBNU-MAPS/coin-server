@@ -1,10 +1,17 @@
 package com.maps.coin.controller;
 
+import com.maps.coin.dto.avatar.AvatarResponse;
+import com.maps.coin.dto.user.GamerInfoResponse;
+import com.maps.coin.dto.user.GamerResponse;
 import com.maps.coin.handler.WebSocketHandler;
+import com.maps.coin.service.AvatarService;
+import com.maps.coin.service.GamerService;
 import com.maps.coin.service.RoomService;
 import com.maps.coin.service.SessionService;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -18,11 +25,13 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @RequiredArgsConstructor
 public class StompController {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
     private final SimpMessageSendingOperations simpleMessageSendingOperations;
 
     private final RoomService roomService;
     private final SessionService sessionService;
+    private final AvatarService avatarService;
+    private final GamerService gamerService;
+
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
@@ -40,14 +49,29 @@ public class StompController {
 
         UUID roomCode = sessionService.readRoomId(sessionId);
         simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
-                roomService.readRoom(roomCode));
+            roomService.readRoom(roomCode));
+
+        List<GamerResponse> gamers = gamerService.read(roomCode);
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/users",
+            GamerInfoResponse.builder().users(gamers).build());
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccesor.getSessionId();
+        UUID roomId = sessionService.readRoomId(sessionId);
 
-        LOGGER.info("sessionId Disconnected : " + sessionId);
+        sessionService.remove(sessionId, roomId);
+
+        List<Boolean> avatars = avatarService.remove(roomId, sessionId);
+        if (avatars != null) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/avatar",
+                AvatarResponse.builder().selectedAvatars(avatars).build());
+        }
+
+        GamerResponse gamer = gamerService.remove(roomId, sessionId);
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
+            gamer);
     }
 }

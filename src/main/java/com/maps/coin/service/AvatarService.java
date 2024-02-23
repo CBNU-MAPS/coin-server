@@ -41,4 +41,20 @@ public class AvatarService {
         List<Boolean> avatars = roomAvatar.get(roomId);
         return avatars;
     }
+
+
+    public List<Boolean> remove(UUID roomId, String sessionId){
+        if(userAvatar.containsKey(sessionId)){
+            Integer avatar = userAvatar.get(sessionId);
+
+            List<Boolean> avatars = roomAvatar.get(roomId);
+            avatars.set(avatar, false);
+            roomAvatar.put(roomId, avatars);
+
+            userAvatar.remove(sessionId);
+
+            return avatars;
+        }
+        return null;
+    }
 }
