@@ -30,6 +30,9 @@ public class Gamer extends BaseEntity {
     @Column(name = "avatar", nullable = false)
     private Integer avatar;
 
+    @Column(name = "bingoCount", nullable = false)
+    private Integer bingoCount;
+
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
@@ -38,10 +41,11 @@ public class Gamer extends BaseEntity {
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
-    public Gamer(String id, String name, Integer avatar, Room room) {
+    public Gamer(String id, String name, Integer avatar, Integer bingoCount, Room room) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
+        this.bingoCount = bingoCount;
         this.room = room;
     }
 }
