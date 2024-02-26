@@ -26,6 +26,9 @@ public class Answer extends BaseEntity {
     @Column(name = "answer", nullable = false)
     private String answer;
 
+    @Column(name = "selected", nullable = true)
+    private Boolean selected;
+
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;
@@ -33,6 +36,10 @@ public class Answer extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "gamer_id", referencedColumnName = "id")
     private Gamer gamer;
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+    }
 
     @Builder
     public Answer(String answer, Question question, Gamer gamer) {

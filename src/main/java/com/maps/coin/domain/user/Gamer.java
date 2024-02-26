@@ -41,11 +41,11 @@ public class Gamer extends BaseEntity {
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
-    public Gamer(String id, String name, Integer avatar, Integer bingoCount, Room room) {
+    public Gamer(String id, String name, Integer avatar, Room room) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
-        this.bingoCount = bingoCount;
+        this.bingoCount = 0;
         this.room = room;
     }
 }
