@@ -1,7 +1,6 @@
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '자신의 MBTI는?', null);
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '좋아하는 영화 장르는?', null);
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '좋아하는 음악 장르는?', null);
-INSERT INTO question (id, type, question, option) VALUES (default, 'text', '좋아하는 음악 장르는?', null);
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '좋아하는 동물은?', null);
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '무인도에 가져갈 하나의 물건은?', null);
 INSERT INTO question (id, type, question, option) VALUES (default, 'text', '좋아하는 계절은?', null);
