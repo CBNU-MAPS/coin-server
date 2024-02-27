@@ -92,6 +92,9 @@ public class GamerService {
                 break;
             }
         }
+
+        Room room = roomRepository.findById(roomId).orElse(null);
+        room.setStart(true);
         return start;
     }
 
