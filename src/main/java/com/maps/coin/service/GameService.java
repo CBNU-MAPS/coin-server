@@ -5,6 +5,7 @@ import com.maps.coin.domain.user.Answer;
 import com.maps.coin.domain.user.Board;
 import com.maps.coin.domain.user.Gamer;
 import com.maps.coin.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GameService {
     private final RoomRepository roomRepository;
