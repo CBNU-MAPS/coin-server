@@ -134,7 +134,7 @@ public class GamerService {
 
             roomGamerResponse.put(roomId, gamers);
             gamerRepository.deleteById(sessionId);
-
+          
             GamerResponse gamerResponse = GamerResponse.builder().avatar(avatar).build();
             return gamerResponse;
         }
