@@ -32,7 +32,6 @@ public class StompController {
     private final AvatarService avatarService;
     private final GamerService gamerService;
 
-
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
@@ -46,14 +45,18 @@ public class StompController {
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccesor.getSessionId();
-
         UUID roomCode = sessionService.readRoomId(sessionId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
-            roomService.readRoom(roomCode));
 
-        List<GamerResponse> gamers = gamerService.read(roomCode);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/users",
-            GamerInfoResponse.builder().users(gamers).build());
+        if (headerAccesor.getDestination().matches(".*/room")) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
+                    roomService.readRoom(roomCode));
+        }
+
+        if (headerAccesor.getDestination().matches(".*/users")) {
+            List<GamerResponse> gamers = gamerService.read(roomCode);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/users",
+                    GamerInfoResponse.builder().users(gamers).build());
+        }
     }
 
     @EventListener
