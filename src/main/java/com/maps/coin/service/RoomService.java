@@ -3,7 +3,6 @@ package com.maps.coin.service;
 import com.maps.coin.domain.question.Question;
 import com.maps.coin.domain.room.Problem;
 import com.maps.coin.domain.room.Room;
-import com.maps.coin.domain.user.Gamer;
 import com.maps.coin.dto.room.CreateRoomRequest;
 import com.maps.coin.dto.room.CreateRoomResponse;
 import com.maps.coin.dto.room.RoomInfoResponse;
@@ -93,7 +92,7 @@ public class RoomService {
         }
 
         Integer gamerCount = sessionService.readSessionCount(roomId);
-        if (gamerCount.equals(room.getPersonnel())) {
+        if (gamerCount < room.getPersonnel()) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
