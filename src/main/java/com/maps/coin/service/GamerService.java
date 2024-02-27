@@ -64,6 +64,11 @@ public class GamerService {
             answerRepository.save(answer);
         });
 
+        gamers.stream().forEach(g -> {
+            if (g.getAvatar() == avatar) g.setReady(true);
+        });
+        roomGamerResponse.put(roomId, gamers);
+
         GamerResponse gamer = GamerResponse.builder().name(name).avatar(avatar).ready(true).turn(false).build();
         return gamer;
     }
