@@ -123,7 +123,7 @@ public class GamerService {
 
             GamerResponse gamer = GamerResponse.builder().avatar(avatar).build();
             return gamer;
-        }return null;
+        } return null;
     }
 }
 
