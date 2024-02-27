@@ -48,8 +48,12 @@ public class StompController {
         UUID roomCode = sessionService.readRoomId(sessionId);
 
         if (headerAccesor.getDestination().matches(".*/room")) {
-            simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
-                    roomService.readRoom(roomCode));
+            if (!roomService.readRoomAccessPermission(roomCode)) {
+                simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room", "");
+            } else {
+                simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
+                        roomService.readRoom(roomCode));
+            }
         }
 
         if (headerAccesor.getDestination().matches(".*/users")) {
@@ -60,7 +64,8 @@ public class StompController {
     }
 
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event)
+            throws InterruptedException {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccesor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
@@ -78,5 +83,6 @@ public class StompController {
             simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
                     gamer);
         }
+        roomService.deleteRoomIfEmpty(roomId);
     }
 }
