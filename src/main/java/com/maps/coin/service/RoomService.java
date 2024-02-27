@@ -92,7 +92,7 @@ public class RoomService {
         }
 
         Integer gamerCount = sessionService.readSessionCount(roomId);
-        if (gamerCount < room.getPersonnel()) {
+        if (gamerCount > room.getPersonnel()) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
