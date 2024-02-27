@@ -121,19 +121,21 @@ public class GamerService {
     public GamerResponse remove(UUID roomId, String sessionId) {
         if (roomGamerResponse.containsKey(roomId)) {
             List<GamerResponse> gamers = roomGamerResponse.get(roomId);
-            Integer avatar = gamerRepository.findById(sessionId).get().getAvatar();
+            Gamer gamer = gamerRepository.findById(sessionId).orElse(null);
+            if (gamer == null) return null;
 
+            Integer avatar = gamer.getAvatar();
             gamers.removeIf(g -> gamerRepository.findById(sessionId)
-                .map(gamer->gamer.getName().equals(g.getName()))
+                .map(g2->g2.getName().equals(g.getName()))
                 .orElse(false));
 
             roomGamerResponse.put(roomId, gamers);
-
             gamerRepository.deleteById(sessionId);
 
-            GamerResponse gamer = GamerResponse.builder().avatar(avatar).build();
-            return gamer;
-        }return null;
+            GamerResponse gamerResponse = GamerResponse.builder().avatar(avatar).build();
+            return gamerResponse;
+        }
+        return null;
     }
 }
 

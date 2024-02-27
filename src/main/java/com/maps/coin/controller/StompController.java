@@ -74,7 +74,9 @@ public class StompController {
         }
 
         GamerResponse gamer = gamerService.remove(roomId, sessionId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
-            gamer);
+        if (gamer != null) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
+                    gamer);
+        }
     }
 }
