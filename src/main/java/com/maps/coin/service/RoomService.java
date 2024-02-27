@@ -23,6 +23,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final QuestionRepository questionRepository;
+    private final SessionService sessionService;
 
     public Room save(CreateRoomRequest request) {
         return roomRepository.save(request.toEntity());
@@ -90,8 +91,8 @@ public class RoomService {
             return Boolean.FALSE;
         }
 
-        Integer gamerCount = room.getGamers().size();
-        if (gamerCount.equals(room.getPersonnel())) {
+        Integer gamerCount = sessionService.readSessionCount(roomId);
+        if (gamerCount > room.getPersonnel()) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;

@@ -12,5 +12,11 @@ public class SessionService {
     public void save(String sessionId, UUID roomId) { sessions.put(sessionId, roomId); }
 
     public UUID readRoomId(String sessionId) { return sessions.get(sessionId); }
+
+    public Integer readSessionCount(UUID roomId) {
+        return Math.toIntExact(sessions.values().stream()
+                .filter(uuid -> uuid.equals(roomId))
+                .count());
+    }
     public void remove(String sessionId, UUID roomId){ sessions.remove(sessionId, roomId); }
 }
