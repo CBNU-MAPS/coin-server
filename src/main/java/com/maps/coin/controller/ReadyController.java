@@ -61,12 +61,8 @@ public class ReadyController {
                 gamer);
 
         if (gamerService.readStartStatus(roomId)) {
-            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
-                    "");
-
-            gameService.createRoomGamerBoard(roomId);
             List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
-            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/users",
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
                     GamerInfoResponse.builder().users(gamers).build());
         }
     }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,6 +47,7 @@ public class RoomService {
 
     public RoomInfoResponse readRoom(UUID roomId) {
         Room room = roomRepository.findById(roomId).orElse(null);
+        if (room.getDeleted()) return null;
 
         List<Problem> problems = room.getProblems();
         List<Question> questions = new ArrayList<>();
@@ -65,5 +67,33 @@ public class RoomService {
                 .bingoHeadCount(room.getPersonnel())
                 .questions(questions)
                 .build();
+    }
+
+    @Async
+    public void deleteRoomIfEmpty(UUID roomId) throws InterruptedException {
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room != null && room.getGamers().size() == 0) {
+            Thread.sleep(1000 * 60);
+            if (room.getGamers().size() == 0) {
+                roomRepository.deleteById(roomId);
+            }
+        }
+    }
+
+    public Boolean readRoomAccessPermission(UUID roomId) {
+        Room room = roomRepository.findById(roomId).orElse(null);
+
+        if (room == null || room.getDeleted()) {
+            return Boolean.FALSE;
+        }
+        if (room.getStart()) {
+            return Boolean.FALSE;
+        }
+
+        Integer gamerCount = room.getGamers().size();
+        if (gamerCount.equals(room.getPersonnel())) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 }

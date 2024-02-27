@@ -17,12 +17,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "room")
+@SQLDelete(sql = "UPDATE room SET deleted = true WHERE id = ?")
 public class Room extends BaseEntity {
 
     @Id
@@ -38,6 +40,11 @@ public class Room extends BaseEntity {
 
     @Column(name="size", nullable = false)
     private Integer size;
+
+    @Column(name="start", nullable = false)
+    private Boolean start = Boolean.FALSE;
+
+    private Boolean deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy="room", cascade = CascadeType.ALL)
     private List<Problem> problems = new ArrayList<>();
