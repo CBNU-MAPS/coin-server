@@ -23,7 +23,7 @@ public class Board {
 
             for (int j = 0; j < size; j++) {
                 Answer answer = row.get(j);
-                this.position.put(answer.getId(), Pair.of(i, j));
+                this.position.put(answer.getQuestion().getId(), Pair.of(i, j));
             }
             this.board.add(new ArrayList<>(row));
         }
