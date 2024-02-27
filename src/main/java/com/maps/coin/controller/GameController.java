@@ -36,7 +36,7 @@ public class GameController {
                 GamerInfoResponse.builder().users(gamers).build());
 
         AnswerResponse answer = AnswerResponse.builder().answerRequest(message).build();
-        List<Gamer> selectedGamers = gameService
+        List<GamerResponse> selectedGamers = gameService
                 .findSameAnswerGamer(roomId, message.getQuestionId(), message.getAnswer());
         simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/select",
                 SameAnswerGamerListResponse.builder().answer(answer).users(selectedGamers).build());

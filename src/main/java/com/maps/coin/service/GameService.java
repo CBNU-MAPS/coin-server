@@ -4,6 +4,7 @@ import com.maps.coin.domain.room.Room;
 import com.maps.coin.domain.user.Answer;
 import com.maps.coin.domain.user.Board;
 import com.maps.coin.domain.user.Gamer;
+import com.maps.coin.dto.user.GamerResponse;
 import com.maps.coin.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public class GameService {
         gamers.stream().forEach(g -> createGamerBoard(g, room.getSize()));
     }
 
-    public List<Gamer> findSameAnswerGamer(UUID roomId, Long questionId, String answer) {
+    public List<GamerResponse> findSameAnswerGamer(UUID roomId, Long questionId, String answer) {
         Room room = roomRepository.findById(roomId).orElse(null);
         List<Gamer> gamers = room.getGamers();
 
-        List<Gamer> gamerResponseList = new ArrayList<>();
+        List<GamerResponse> gamerResponseList = new ArrayList<>();
         gamers.stream().forEach(g -> {
             String sessionId = g.getId();
             if (!boards.containsKey(sessionId)) createGamerBoard(g, room.getSize());
@@ -54,7 +55,7 @@ public class GameService {
                 gamerAnswerBoard.get(pos.getFirst()).set(pos.getSecond(), gamerAnswer);
                 board.setBoard(gamerAnswerBoard);
                 boards.put(sessionId, board);
-                gamerResponseList.add(g);
+                gamerResponseList.add(GamerResponse.builder().name(g.getName()).avatar(g.getAvatar()).build());
             }
         });
         return gamerResponseList;
