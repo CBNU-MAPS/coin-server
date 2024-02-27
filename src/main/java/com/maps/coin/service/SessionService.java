@@ -12,5 +12,5 @@ public class SessionService {
     public void save(String sessionId, UUID roomId) { sessions.put(sessionId, roomId); }
 
     public UUID readRoomId(String sessionId) { return sessions.get(sessionId); }
-    public void remove(String sessionId, UUID roomId){sessions.remove(sessionId, roomId);}
+    public void remove(String sessionId, UUID roomId){ sessions.remove(sessionId, roomId); }
 }
