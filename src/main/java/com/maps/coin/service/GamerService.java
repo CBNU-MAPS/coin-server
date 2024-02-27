@@ -64,12 +64,17 @@ public class GamerService {
             answerRepository.save(answer);
         });
 
-        gamers.stream().forEach(g -> {
-            if (g.getAvatar() == avatar) g.setReady(true);
-        });
-        roomGamerResponse.put(roomId, gamers);
+        Boolean ready = false;
+        for (GamerResponse g: gamers) {
+            if (g.getAvatar().equals(avatar)) {
+                Boolean gamerReady = g.getReady();
+                ready = gamerReady ^ true;
+                g.setReady(ready);
+            }
+        }
 
-        GamerResponse gamer = GamerResponse.builder().name(name).avatar(avatar).ready(true).turn(false).build();
+        roomGamerResponse.put(roomId, gamers);
+        GamerResponse gamer = GamerResponse.builder().name(name).avatar(avatar).ready(ready).turn(false).build();
         return gamer;
     }
 
