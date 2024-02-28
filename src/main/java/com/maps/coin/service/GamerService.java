@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +29,10 @@ public class GamerService {
     private final GamerRepository gamerRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final SessionService sessionService;
+
     private Map<UUID, List<GamerResponse>> roomGamerResponse = new HashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(GamerService.class);
 
     public GamerResponse save(UUID roomId, String sessionId, String name, Integer avatar) {
         if (!roomGamerResponse.containsKey(roomId)) {
@@ -95,6 +100,10 @@ public class GamerService {
 
     public Boolean readStartStatus(UUID roomId) {
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+        Integer count = sessionService.readSessionCount(roomId);
+        logger.info(String.valueOf(count));
+        logger.info(String.valueOf(gamers.size()));
+        if (!count.equals(gamers.size())) return false;
 
         Boolean start = true;
         for (GamerResponse g : gamers) {
