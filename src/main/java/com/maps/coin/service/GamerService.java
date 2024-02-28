@@ -55,12 +55,23 @@ public class GamerService {
         answers.stream().forEach(a -> {
             Question question = questionRepository.findById(a.getQuestionId()).orElse(null);
             Gamer gamer = gamerRepository.findById(sessionId).orElse(null);
+            List<Answer> answerList = gamer.getAnswers();
 
-            Answer answer = Answer.builder()
-                    .answer(a.getAnswer())
-                    .question(question)
-                    .gamer(gamer)
-                    .build();
+            Answer answer = answerList.stream()
+                    .filter(q -> a.getQuestionId().equals(q.getQuestion().getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (answer == null) {
+                answer = Answer.builder()
+                        .answer(a.getAnswer())
+                        .question(question)
+                        .gamer(gamer)
+                        .build();
+            } else {
+                answer.setAnswer(a.getAnswer());
+            }
+
             answerRepository.save(answer);
         });
 

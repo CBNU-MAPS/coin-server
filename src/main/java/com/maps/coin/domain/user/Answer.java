@@ -41,6 +41,9 @@ public class Answer extends BaseEntity {
         this.selected = selected;
     }
 
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
     @Builder
     public Answer(String answer, Question question, Gamer gamer) {
         this.answer = answer;
