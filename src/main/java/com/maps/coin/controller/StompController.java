@@ -83,6 +83,12 @@ public class StompController {
             simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/delete",
                     gamer);
         }
+
+        if (gamerService.readStartStatus(roomId)) {
+            List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
+                    GamerInfoResponse.builder().users(gamers).build());
+        }
         roomService.deleteRoomIfEmpty(roomId);
     }
 }
