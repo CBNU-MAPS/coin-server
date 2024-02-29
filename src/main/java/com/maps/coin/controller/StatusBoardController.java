@@ -4,6 +4,7 @@ import com.maps.coin.dto.board.StatusBoardListResponse;
 import com.maps.coin.dto.board.StatusBoardResponse;
 import com.maps.coin.service.GameService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class StatusBoardController {
     @GetMapping("/api/board")
     public ResponseEntity<StatusBoardListResponse> readBingoStatusBoard(@RequestParam String roomCode) {
         List<StatusBoardResponse> board = gameService.findStatusBoardList(UUID.fromString(roomCode));
+        Collections.reverse(board);
         return ResponseEntity.status(HttpStatus.OK).body(StatusBoardListResponse.builder().statusBoardList(board)
                 .build());
     }
