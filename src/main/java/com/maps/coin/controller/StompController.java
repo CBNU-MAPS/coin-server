@@ -69,6 +69,8 @@ public class StompController {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccesor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
+        Boolean isTurn = gamerService.readTurnStatus(roomId, sessionId);
+
 
         sessionService.remove(sessionId, roomId);
 
@@ -84,11 +86,18 @@ public class StompController {
                     gamer);
         }
 
+        if (isTurn) {
+            List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/users",
+                    GamerInfoResponse.builder().users(gamers).build());
+        }
+
         if (gamerService.readStartStatus(roomId)) {
             List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
             simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
                     GamerInfoResponse.builder().users(gamers).build());
         }
+
         roomService.deleteRoomIfEmpty(roomId);
     }
 }
