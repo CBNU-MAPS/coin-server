@@ -26,4 +26,4 @@ INSERT INTO question (id, type, question, option) VALUES (default, 'option', '�
 INSERT INTO question (id, type, question, option) VALUES (default, 'option', '선의의 거짓말', '{"괜찮다", "아니다"}');
 INSERT INTO question (id, type, question, option) VALUES (default, 'option', '둘 중 좋아하는 동물은', '{"강아지", "고양이"}');
 INSERT INTO question (id, type, question, option) VALUES (default, 'option', '핫도그는 샌드위치다', '{"맞다", "아니다"}');
-INSERT INTO question (id, type, question, option) VALUES (default, 'option', '셋 중 좋은 것은', '{"부먹", "찍먹", "처먹"}');
+INSERT INTO question (id, type, question, option) VALUES (default, 'option', '둘 중 좋은 것은', '{"부먹", "찍먹"}');

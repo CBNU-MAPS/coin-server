@@ -118,6 +118,22 @@ public class GamerService {
         return start;
     }
 
+    public Boolean readTurnStatus(UUID roomId, String sessionId) {
+        Boolean turn = false;
+        List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+
+        Gamer gamer = gamerRepository.findById(sessionId).orElse(null);
+        if (gamer == null) return false;
+
+        Integer avatar = gamer.getAvatar();
+        for (int i = 0; i < gamers.size(); i++) {
+            if (avatar.equals(gamers.get(i).getAvatar())) {
+                if (gamers.get(i).getTurn() == true) turn = true;
+            }
+        }
+        return turn;
+    }
+
     public List<GamerResponse> readNextTurnGamer(UUID roomId) {
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
 
