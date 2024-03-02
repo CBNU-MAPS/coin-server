@@ -10,6 +10,7 @@ import com.maps.coin.repository.QuestionRepository;
 import com.maps.coin.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,7 @@ public class RoomService {
                             .option(question.getOption())
                             .build());
         });
+        Collections.shuffle(questions);
 
         return RoomInfoResponse.builder()
                 .bingoName(room.getName())
