@@ -114,7 +114,7 @@ public class GamerService {
         }
 
         Room room = roomRepository.findById(roomId).orElse(null);
-        room.setStart(true);
+        room.setStart(start);
         return start;
     }
 
