@@ -1,18 +1,17 @@
 package com.maps.coin.controller;
 
 import com.maps.coin.dto.avatar.AvatarResponse;
+import com.maps.coin.dto.room.RoomInfoResponse;
 import com.maps.coin.dto.user.GamerInfoResponse;
 import com.maps.coin.dto.user.GamerResponse;
-import com.maps.coin.handler.WebSocketHandler;
 import com.maps.coin.service.AvatarService;
+import com.maps.coin.service.GameService;
 import com.maps.coin.service.GamerService;
 import com.maps.coin.service.RoomService;
 import com.maps.coin.service.SessionService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -31,6 +30,7 @@ public class StompController {
     private final SessionService sessionService;
     private final AvatarService avatarService;
     private final GamerService gamerService;
+    private final GameService gameService;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
@@ -51,8 +51,10 @@ public class StompController {
             if (!roomService.readRoomAccessPermission(roomCode)) {
                 simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room", "");
             } else {
+                RoomInfoResponse roomInfo = roomService.readRoom(roomCode);
                 simpleMessageSendingOperations.convertAndSend("/room/" + roomCode + "/room",
-                        roomService.readRoom(roomCode));
+                        roomInfo);
+                gameService.saveProblemOrder(sessionId, roomInfo.getQuestions());
             }
         }
 
@@ -69,6 +71,8 @@ public class StompController {
         StompHeaderAccessor headerAccesor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccesor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
+        Boolean isTurn = gamerService.readTurnStatus(roomId, sessionId);
+
 
         sessionService.remove(sessionId, roomId);
 
@@ -84,11 +88,18 @@ public class StompController {
                     gamer);
         }
 
+        if (isTurn) {
+            List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/users",
+                    GamerInfoResponse.builder().users(gamers).build());
+        }
+
         if (gamerService.readStartStatus(roomId)) {
             List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
             simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/start",
                     GamerInfoResponse.builder().users(gamers).build());
         }
+
         roomService.deleteRoomIfEmpty(roomId);
     }
 }

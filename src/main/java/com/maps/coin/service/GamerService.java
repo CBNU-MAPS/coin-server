@@ -100,9 +100,9 @@ public class GamerService {
 
     public Boolean readStartStatus(UUID roomId) {
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+        if (gamers == null) return false;
         Integer count = sessionService.readSessionCount(roomId);
-        logger.info(String.valueOf(count));
-        logger.info(String.valueOf(gamers.size()));
+
         if (!count.equals(gamers.size())) return false;
 
         Boolean start = true;
@@ -116,6 +116,22 @@ public class GamerService {
         Room room = roomRepository.findById(roomId).orElse(null);
         room.setStart(true);
         return start;
+    }
+
+    public Boolean readTurnStatus(UUID roomId, String sessionId) {
+        Boolean turn = false;
+        List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+
+        Gamer gamer = gamerRepository.findById(sessionId).orElse(null);
+        if (gamer == null) return false;
+
+        Integer avatar = gamer.getAvatar();
+        for (int i = 0; i < gamers.size(); i++) {
+            if (avatar.equals(gamers.get(i).getAvatar())) {
+                if (gamers.get(i).getTurn() == true) turn = true;
+            }
+        }
+        return turn;
     }
 
     public List<GamerResponse> readNextTurnGamer(UUID roomId) {
