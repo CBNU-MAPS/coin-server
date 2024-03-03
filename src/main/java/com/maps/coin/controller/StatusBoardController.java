@@ -22,8 +22,7 @@ public class StatusBoardController {
 
     @GetMapping("/api/board")
     public ResponseEntity<StatusBoardListResponse> readBingoStatusBoard(@RequestParam String roomCode) {
-        List<StatusBoardResponse> board = gameService.findStatusBoardList(UUID.fromString(roomCode));
-        Collections.reverse(board);
+        List<StatusBoardResponse> board = gameService.findStatusBoardList(UUID.fromString(roomCode));\
         return ResponseEntity.status(HttpStatus.OK).body(StatusBoardListResponse.builder().statusBoardList(board)
                 .build());
     }
