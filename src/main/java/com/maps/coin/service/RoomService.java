@@ -62,7 +62,6 @@ public class RoomService {
                             .option(question.getOption())
                             .build());
         });
-        Collections.shuffle(questions);
 
         return RoomInfoResponse.builder()
                 .bingoName(room.getName())
