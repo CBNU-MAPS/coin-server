@@ -100,9 +100,9 @@ public class GamerService {
 
     public Boolean readStartStatus(UUID roomId) {
         List<GamerResponse> gamers = roomGamerResponse.get(roomId);
+        if (gamers == null) return false;
         Integer count = sessionService.readSessionCount(roomId);
-        logger.info(String.valueOf(count));
-        logger.info(String.valueOf(gamers.size()));
+
         if (!count.equals(gamers.size())) return false;
 
         Boolean start = true;

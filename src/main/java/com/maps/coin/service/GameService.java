@@ -1,9 +1,11 @@
 package com.maps.coin.service;
 
+import com.maps.coin.domain.question.Question;
 import com.maps.coin.domain.room.Room;
 import com.maps.coin.domain.user.Answer;
 import com.maps.coin.domain.user.Board;
 import com.maps.coin.domain.user.Gamer;
+import com.maps.coin.dto.answer.AnswerBoardIndex;
 import com.maps.coin.dto.user.GamerResponse;
 import com.maps.coin.repository.RoomRepository;
 import jakarta.transaction.Transactional;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,27 @@ public class GameService {
         Room room = roomRepository.findById(roomId).orElse(null);
         List<Gamer> gamers = room.getGamers();
         gamers.stream().forEach(g -> createGamerBoard(g, room.getSize()));
+    }
+
+    private List<AnswerBoardIndex> readSortedAnswers(List<Answer> answers, List<Long> order) {
+        Map<Long, AnswerBoardIndex> answerMap = new HashMap<>();
+
+        answers.stream().forEach(a -> {
+            answerMap.put(a.getQuestion().getId(),
+                    AnswerBoardIndex.builder().answer(a.getAnswer()).questionId(a.getQuestion().getId()).build());
+        });
+
+        List<AnswerBoardIndex> sortedAnswers = order.stream()
+                .map(orderItem -> answerMap.get(orderItem))
+                .collect(Collectors.toList());
+        return sortedAnswers;
+    }
+
+    public void saveProblemOrder(String sessionId, List<Question> questions) {
+        List<Long> order = new ArrayList<>();
+        questions.stream().forEach(q -> {
+            order.add(q.getId());
+        });
     }
 
     public List<GamerResponse> findSameAnswerGamer(UUID roomId, Long questionId, String answer) {
@@ -59,5 +83,48 @@ public class GameService {
             }
         });
         return gamerResponseList;
+    }
+
+    private Integer countBingo(String sessionId, Integer size) {
+        Board board = boards.get(sessionId);
+        List<List<Answer>> answers = board.getBoard();
+
+        Integer count = 0;
+        for (List<Answer> row : answers) {
+            if (row.stream().allMatch(answer -> Boolean.TRUE.equals(answer.getSelected()))) {
+                count++;
+            }
+        }
+
+        for (int col = 0; col < size; col++) {
+            int finalCol = col;
+            if (answers.stream().allMatch(row -> Boolean.TRUE.equals(row.get(finalCol).getSelected()))) {
+                count++;
+            }
+        }
+
+        if (answers.stream().allMatch(row -> Boolean.TRUE.equals(row.get(answers.indexOf(row)).getSelected()))) {
+            count++;
+        }
+
+        if (answers.stream().allMatch(row -> Boolean.TRUE.equals(row.get(size - 1 - answers.indexOf(row)).getSelected()))) {
+            count++;
+        }
+        return count;
+    }
+
+    public Boolean findGameEnd(UUID roomId) {
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room == null) return false;
+
+        Boolean isEnd = false;
+        List<Gamer> gamers = room.getGamers();
+        for (Gamer gamer: gamers) {
+            Integer count = countBingo(gamer.getId(), room.getSize());
+            if (room.getSize() == 3 && count >= 3) isEnd = true;
+            if (room.getSize() == 4 && count >= 4) isEnd = true;
+            if (room.getSize() == 5 && count >= 5) isEnd = true;
+        }
+        return isEnd;
     }
 }

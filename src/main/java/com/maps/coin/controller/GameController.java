@@ -1,6 +1,5 @@
 package com.maps.coin.controller;
 
-import com.maps.coin.domain.user.Gamer;
 import com.maps.coin.dto.answer.AnswerRequest;
 import com.maps.coin.dto.answer.AnswerResponse;
 import com.maps.coin.dto.user.GamerInfoResponse;
@@ -31,14 +30,21 @@ public class GameController {
         String sessionId = headerAccessor.getSessionId();
         UUID roomId = sessionService.readRoomId(sessionId);
 
-        List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
-        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/users",
-                GamerInfoResponse.builder().users(gamers).build());
-
         AnswerResponse answer = AnswerResponse.builder().answerRequest(message).build();
         List<GamerResponse> selectedGamers = gameService
                 .findSameAnswerGamer(roomId, message.getQuestionId(), message.getAnswer());
+
+        List<GamerResponse> gamers = gamerService.readNextTurnGamer(roomId);
+
+        Boolean isEnd = gameService.findGameEnd(roomId);
+
         simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/select",
                 SameAnswerGamerListResponse.builder().answer(answer).users(selectedGamers).build());
+        simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/users",
+                GamerInfoResponse.builder().users(gamers).build());
+        if (isEnd) {
+            simpleMessageSendingOperations.convertAndSend("/room/" + roomId + "/end",
+                    "");
+        }
     }
 }
