@@ -88,6 +88,7 @@ public class GameService {
             }
         });
 
+        if (!statusBoards.containsKey(roomId)) statusBoards.put(roomId, new ArrayList<>());
         List<StatusBoardResponse> statusBoard = statusBoards.get(roomId);
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question != null) {
