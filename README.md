@@ -1,11 +1,17 @@
 # 📌 COIN / 코인
 
 > COMMON INTEREST, 공통 관심사를 찾아주는 빙고 게임
+
 - Link: [COIN APP LINK](https://coin-bingo.vercel.app/)
 
 # 🏛️ Project Architecture / 프로젝트 아키텍쳐
 
-- 그림들
+### Architecture
+![coin drawio](https://github.com/CBNU-MAPS/coin-server/assets/68336833/33b9e90a-089a-457f-bb64-2769e82352f3)
+
+### ERD
+![MAPS-COIN (1)](https://github.com/CBNU-MAPS/coin-server/assets/68336833/0c7187be-73cc-4bee-9cbb-5903dc72946c)
+
 
 
 # 🗂️ Project Structure / 프로젝트 구조
@@ -101,7 +107,7 @@
 ```
 
 # ⚙️ Dependencies / 의존성
-- Dependencies
+### Dependencies
 ```java
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -115,7 +121,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 ```
-- Usage
+### Usage
 ```java
 // If you use MacOS or Linux
 sh ./scripts/build-front.sh
