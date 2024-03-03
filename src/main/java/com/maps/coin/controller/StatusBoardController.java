@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Status Board", description = "Status Board API")
 public class StatusBoardController {
-    private GameService gameService;
+    private final GameService gameService;
 
     @GetMapping("/api/board")
     public ResponseEntity<StatusBoardListResponse> readBingoStatusBoard(@RequestParam String roomCode) {
