@@ -92,7 +92,7 @@ public class GameService {
         List<StatusBoardResponse> statusBoard = statusBoards.get(roomId);
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question != null) {
-            statusBoard.add(StatusBoardResponse.builder().answer(answer).question(question.getQuestion())
+            statusBoard.add(0, StatusBoardResponse.builder().answer(answer).question(question.getQuestion())
                     .selectedUsers(gamerResponseList).build());
             statusBoards.put(roomId, statusBoard);
         }
