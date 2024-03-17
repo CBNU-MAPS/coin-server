@@ -14,7 +14,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
 
   db:
-    image: 'postgres:14.10-alpine3.18'
+    image: 'postgres:latest'
     container_name: db
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
